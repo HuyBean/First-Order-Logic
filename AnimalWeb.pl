@@ -164,3 +164,4 @@ IsFamily(Animal) :-
 %if 2 animal can compete or eat each other.
 CanCompete(Animal1, Animal2) :-		
 CanEat(Mammal, Bird) :-
+%hi
