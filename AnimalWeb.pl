@@ -139,10 +139,10 @@ NextLevel('Gavialidae', 'Gharial').
 %Addition predicates
 
 %if that Animal is not belonged to Family, Order, Class, Kingdom.
-Family_of(Family, Animal) :-	
-Order_of(Order, Animal) :-
-Class_of(Class, Animal)	:-	
-Kingdom_of(Kingdom, Animal) :-	
+Family_of(Family, Animal) :-	NextLevel(Family, Animal), IsFamily(Family).
+Order_of(Order, Animal) :-  NextLevel(Order, Family), Family_of(Family, Animal), IsOrder(Order).
+Class_of(Class, Animal)	:-	NextLevel(Class, Order), Order_of(Order, Animal), IsClass(Class).
+Kingdom_of(Kingdom, Animal) :-	IsKingdom(Kingdom), (IsClass(Animal); IsFamily(Animal); IsOrder(Animal)).
 
 %if the Animal1 is same feature with the Animal2.
 IsSameFamily(Animal1, Animal2) :-		
@@ -155,11 +155,11 @@ BothOrder(Animal) :-
 BothClass(Animal) :-	
 
 %if the name in () is Species or Kingdom or Order or Class or Family.
-IsSpecies(Animal) :-	
-IsKingdom(Animal) :-	
-IsClass(Animal) :-
-IsOrder(Animal) :-
-IsFamily(Animal) :-	
+IsSpecies(Animal) :- NextLevel('Animal', Class), NextLevel(Class, Order), NextLevel(Order, Family), NextLevel(Family, Animal).
+IsKingdom(Animal) :- Animal =:=	'Animal'.
+IsClass(Animal) :- NextLevel('Animal', Animal).
+IsOrder(Animal) :- NextLevel('Animal', Class), NextLevel(Class, Animal).
+IsFamily(Animal) :-	NextLevel('Animal', Class), NextLevel(Class, Order), NextLevel(Order, Animal).
 
 %if 2 animal can compete or eat each other.
 CanCompete(Animal1, Animal2) :-		
