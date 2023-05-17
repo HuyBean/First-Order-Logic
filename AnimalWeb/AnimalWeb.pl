@@ -139,36 +139,36 @@ nextlevel('Gavialidae', 'Gharial').
 %Addition predicates.
 
 %if the name in () is Species or Kingdom or Order or Class or Family.
-isspecies(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Family), nextlevel(Family, Animal).
-iskingdom(Animal) :- Animal ==	'Animal'.
-isclass(Animal) :- nextlevel('Animal', Animal).
-isorder(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Animal).
-isfamily(Animal) :-	nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Animal).
+isspecies(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Family), nextlevel(Family, Animal). %To identify if that name is a Species
+iskingdom(Animal) :- Animal ==	'Animal'.%To identify if that name is a Kingdom
+isclass(Animal) :- nextlevel('Animal', Animal).%To identify if that name is a Order
+isorder(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Animal).%To identify if that name is a Class
+isfamily(Animal) :-	nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Animal).%To identify if that name is a Family
 
 %if that Animal is not belonged to Family, Order, Class, Kingdom.
-family_of(Family, Animal) :-	nextlevel(Family, Animal), isfamily(Family).
-order_of(Order, Animal) :-  (nextlevel(Order, Family), family_of(Family, Animal), isorder(Order));(isorder(Order), nextlevel(Order,Animal)).
-class_of(Class, Animal)	:-	(nextlevel(Class, Order), order_of(Order, Animal), isclass(Class)); (isclass(Class), nextlevel(Class, Animal)); (isclass(Class), nextlevel(Class, Order), nextlevel(Order, Animal)).
-kingdom_of(Kingdom, Animal) :-	iskingdom(Kingdom), (isclass(Animal); isfamily(Animal); isorder(Animal); isspecies(Animal)).
+family_of(Family, Animal) :-	nextlevel(Family, Animal), isfamily(Family).%To identify if that Animal is belonged to Family
+order_of(Order, Animal) :-  (nextlevel(Order, Family), family_of(Family, Animal), isorder(Order));(isorder(Order), nextlevel(Order,Animal)).%To identify if that Animal is belonged to Order
+class_of(Class, Animal)	:-	(nextlevel(Class, Order), order_of(Order, Animal), isclass(Class)); (isclass(Class), nextlevel(Class, Animal)); (isclass(Class), nextlevel(Class, Order), nextlevel(Order, Animal)).%To identify if that Animal is belonged to Class
+kingdom_of(Kingdom, Animal) :-	iskingdom(Kingdom), (isclass(Animal); isfamily(Animal); isorder(Animal); isspecies(Animal)).%To identify if that Animal is belonged to Kingdom
 
 
 %if the Animal1 is same feature with the Animal2.
-issamefamily(Animal1, Animal2) :- family_of(Family, Animal1), family_of(Family, Animal2).
-issameorder(Animal1, Animal2) :- order_of(Order, Animal1), order_of(Order, Animal2).
-issameclass(Animal1, Animal2) :- class_of(Class, Animal1), class_of(Class, Animal2).
+issamefamily(Animal1, Animal2) :- family_of(Family, Animal1), family_of(Family, Animal2).%To identify that Animal1 and Animal2 are in the same family
+issameorder(Animal1, Animal2) :- order_of(Order, Animal1), order_of(Order, Animal2).%To identify that Animal1 and Animal2 are in the same order
+issameclass(Animal1, Animal2) :- class_of(Class, Animal1), class_of(Class, Animal2).%To identify that Animal1 and Animal2 are in the same class
 
 %if the Animal has more than 1 feature.
-bothfamily(Animal) :- family_of(Family1, Animal), family_of(Family2, Animal), Family1 \= Family2.
-bothorder(Animal) :- order_of(Order1, Animal), order_of(Order2, Animal), Order1 \= Order2.
-bothclass(Animal) :- class_of(Class1, Animal), class_of(Class2, Animal), Class1 \= Class2.
+bothfamily(Animal) :- family_of(Family1, Animal), family_of(Family2, Animal), Family1 \= Family2.%To identify that Animal is in two families
+bothorder(Animal) :- order_of(Order1, Animal), order_of(Order2, Animal), Order1 \= Order2.%To identify that Animal is in two orders
+bothclass(Animal) :- class_of(Class1, Animal), class_of(Class2, Animal), Class1 \= Class2.%To identify that Animal is in two classes
 
 %if 2 animal can compete or eat each other.
 
 % if that creatures are 'Mammal' and 'Reptile' or they are both from
 % the same Class, then they can compete each other
-cancompete(Mammal, Reptile) :-	(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Reptile), Class2 == 'Reptile');	(class_of(Class1, Mammal), Class1 == 'Reptile', class_of(Class2, Reptile), Class2 == 'Mammal'); issameclass(Mammal, Reptile).
+cancompete(Mammal, Reptile) :-	(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Reptile), Class2 == 'Reptile');	(class_of(Class1, Mammal), Class1 == 'Reptile', class_of(Class2, Reptile), Class2 == 'Mammal'); issameclass(Mammal, Reptile).%To identify if that Animal1 can compete with Animal2
 
 % if the first animal is 'Mammal' and the second one is 'Bird'
 % Then the first one can eat the second
-caneat(Mammal, Bird) :-(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Bird), Class2 == 'Bird'); (isclass(Mammal), Mammal == 'Mammal', isclass(Bird), Bird == 'Bird').
-canflight(Bird):- class_of(Class, Bird), Class == 'Bird', family_of(Family, Bird), Family \= 'Flightless birds', Bird \= 'Ruddy duck'.
+caneat(Mammal, Bird) :-(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Bird), Class2 == 'Bird'); (isclass(Mammal), Mammal == 'Mammal', isclass(Bird), Bird == 'Bird').%To identify if Animal1 can eat Animal2
+canflight(Bird):- class_of(Class, Bird), Class == 'Bird', family_of(Family, Bird), Family \= 'Flightless birds', Bird \= 'Ruddy duck'.%To identify an Animal can fly or not
