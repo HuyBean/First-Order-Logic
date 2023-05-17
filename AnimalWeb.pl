@@ -153,9 +153,9 @@ kingdom_of(Kingdom, Animal) :-	iskingdom(Kingdom), (isclass(Animal); isfamily(An
 
 
 %if the Animal1 is same feature with the Animal2.
-issamefamily(Animal1, Animal2) :- family_of(Family, Animal1), family_of(Family, Animal2).		
-issameorder(Animal1, Animal2) :- order_of(Order, Animal1), order_of(Order, Animal2).		
-issameclass(Animal1, Animal2) :- class_of(Class, Animal1), class_of(Class, Animal2).	
+issamefamily(Animal1, Animal2) :- family_of(Family, Animal1), family_of(Family, Animal2).
+issameorder(Animal1, Animal2) :- order_of(Order, Animal1), order_of(Order, Animal2).
+issameclass(Animal1, Animal2) :- class_of(Class, Animal1), class_of(Class, Animal2).
 
 %if the Animal has more than 1 feature.
 bothfamily(Animal) :- family_of(Family1, Animal), family_of(Family2, Animal), Family1 \= Family2.
@@ -164,6 +164,10 @@ bothclass(Animal) :- class_of(Class1, Animal), class_of(Class2, Animal), Class1 
 
 %if 2 animal can compete or eat each other.
 
-% if 2  
+% if that creatures are 'Mammal' and 'Reptile' or they are both from
+% the same Class, then they can compete each other
 cancompete(Mammal, Reptile) :-	(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Reptile), Class2 == 'Reptile');	(class_of(Class1, Mammal), Class1 == 'Reptile', class_of(Class2, Reptile), Class2 == 'Mammal'); issameclass(Mammal, Reptile).
+
+% if the first animal is 'Mammal' and the second one is 'Bird'
+% Then the first one can eat the second
 caneat(Mammal, Bird) :-(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Bird), Class2 == 'Bird'); (isclass(Mammal), Mammal == 'Mammal', isclass(Bird), Bird == 'Bird').

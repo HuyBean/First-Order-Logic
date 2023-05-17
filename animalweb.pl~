@@ -136,20 +136,34 @@ nextlevel('Alligatoridae', 'Australian alligator').
 
 nextlevel('Gavialidae', 'Gharial').
 
-%Addition predicates
-
-%if that Animal is not belonged to Family, Order, Class, Kingdom.
-family_of(Family, Animal) :-	nextlevel(Family, Animal), IsFamily(Family).
-order_of(Order, Animal) :-  nextlevel(Order, Family), Family_of(Family, Animal), IsOrder(Order).
-class_of(Class, Animal)	:-	nextlevel(Class, Order), Order_of(Order, Animal), IsClass(Class).
-kingdom_of(Kingdom, Animal) :-	IsKingdom(Kingdom), (IsClass(Animal); IsFamily(Animal); IsOrder(Animal)).
-
-
+%Addition predicates.
 
 %if the name in () is Species or Kingdom or Order or Class or Family.
 isspecies(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Family), nextlevel(Family, Animal).
-iskingdom(Animal) :- Animal =:=	'Animal'.
+iskingdom(Animal) :- Animal ==	'Animal'.
 isclass(Animal) :- nextlevel('Animal', Animal).
 isorder(Animal) :- nextlevel('Animal', Class), nextlevel(Class, Animal).
 isfamily(Animal) :-	nextlevel('Animal', Class), nextlevel(Class, Order), nextlevel(Order, Animal).
 
+%if that Animal is not belonged to Family, Order, Class, Kingdom.
+family_of(Family, Animal) :-	nextlevel(Family, Animal), isfamily(Family).
+order_of(Order, Animal) :-  (nextlevel(Order, Family), family_of(Family, Animal), isorder(Order));(isorder(Order), nextlevel(Order,Animal)).
+class_of(Class, Animal)	:-	(nextlevel(Class, Order), order_of(Order, Animal), isclass(Class)); (isclass(Class), nextlevel(Class, Animal)); (isclass(Class), nextlevel(Class, Order), nextlevel(Order, Animal)).
+kingdom_of(Kingdom, Animal) :-	iskingdom(Kingdom), (isclass(Animal); isfamily(Animal); isorder(Animal); isspecies(Animal)).
+
+
+%if the Animal1 is same feature with the Animal2.
+issamefamily(Animal1, Animal2) :- family_of(Family, Animal1), family_of(Family, Animal2).		
+issameorder(Animal1, Animal2) :- order_of(Order, Animal1), order_of(Order, Animal2).		
+issameclass(Animal1, Animal2) :- class_of(Class, Animal1), class_of(Class, Animal2).	
+
+%if the Animal has more than 1 feature.
+bothfamily(Animal) :- family_of(Family1, Animal), family_of(Family2, Animal), Family1 \= Family2.
+bothorder(Animal) :- order_of(Order1, Animal), order_of(Order2, Animal), Order1 \= Order2.
+bothclass(Animal) :- class_of(Class1, Animal), class_of(Class2, Animal), Class1 \= Class2.
+
+%if 2 animal can compete or eat each other.
+
+% if 2  
+cancompete(Mammal, Reptile) :-	(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Reptile), Class2 == 'Reptile');	(class_of(Class1, Mammal), Class1 == 'Reptile', class_of(Class2, Reptile), Class2 == 'Mammal'); issameclass(Mammal, Reptile).
+caneat(Mammal, Bird) :-(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Bird), Class2 == 'Bird'); (isclass(Mammal), Mammal == 'Mammal', isclass(Bird), Bird == 'Bird').
