@@ -167,3 +167,4 @@ bothclass(Animal) :- class_of(Class1, Animal), class_of(Class2, Animal), Class1 
 % if 2  
 cancompete(Mammal, Reptile) :-	(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Reptile), Class2 == 'Reptile');	(class_of(Class1, Mammal), Class1 == 'Reptile', class_of(Class2, Reptile), Class2 == 'Mammal'); issameclass(Mammal, Reptile).
 caneat(Mammal, Bird) :-(class_of(Class1, Mammal), Class1 == 'Mammal', class_of(Class2, Bird), Class2 == 'Bird'); (isclass(Mammal), Mammal == 'Mammal', isclass(Bird), Bird == 'Bird').
+% if the Animal can fly
