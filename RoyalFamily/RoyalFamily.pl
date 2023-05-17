@@ -123,8 +123,8 @@ daughter(Child, Parent) :- female(Child), child(Child, Parent).
 % if X divorced Y then Y also divorced X.
 divorced(X, Y) :- divorced(Y, X).
 
-% if X married Y then Y also divorced X.
-married(X, Y) :- divorced(Y, X).
+% if X married Y then Y also married X.
+married(X, Y) :- married(Y, X).
 
 % if GP is parent of Parent and Parent is parent of GC 
 % then GP is grandparent of GC. 
