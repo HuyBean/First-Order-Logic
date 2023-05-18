@@ -75,18 +75,11 @@ def main():
     load_knowledge_base('royal_family.pl')
 
     # User question
-    ask = input('Enter a question: ').split('(')
-    question_predicate = ask[0]
-    arguments = ask[1].split(')')
-    question_arguments = arguments[0].split(',')
-    # question_predicate = input('Enter the predicate: ').split('(')
-    # question_arguments = input('Enter the arguments (comma-separated): ').split(',')
+    question_predicate = input('Enter the predicate: ')
+    question_arguments = input('Enter the arguments (comma-separated): ').split(',')
+    query_type = input('Enter the query type (true_false/variable_search): ')
 
     # Perform the query
-    if question_arguments[0] == '_X' or question_arguments[1] == '_X':
-        query_type = 'variable_search'
-    else:
-        query_type = 'true_false'
     result = query(question_predicate, question_arguments, query_type)
     print('Result:', result)
 
