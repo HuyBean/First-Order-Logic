@@ -74,6 +74,7 @@ namespace SWI_Simulation
         {            
             if (KB.Facts.Contains(Query))
                 return true;
+
             Dictionary <int, List<List<int>> > CombinationBySize = new Dictionary<int, List<List<int>>>();
             List<Tern> newFact = new List<Tern>();
             do
@@ -93,56 +94,8 @@ namespace SWI_Simulation
 
                     foreach (var combine in combianations)
                     {
-                        //check left
-                        bool allTrue = true;
-/*                         foreach (var t in rule.Item1)
-                        {
-                            var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
-                            if (replacedTern.Arguments is null)
-                            {
-                                continue;
-                            }
-
-                            switch (replacedTern.Value)
-                            {
-                                case "\\=":
-                                    if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
-                                    {
-                                        allTrue = false;
-                                    }
-                                    break;
-                                default:
-                                    allTrue = !(!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern));
-                                    break;
-                            }
-                            if (!allTrue)
-                                break;
-                        }
-                        if (allTrue)
-                        {
-                            foreach (var t in rule.Item2)
-                            {
-                                var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
-                                if (replacedTern.Arguments is null)
-                                {
-                                    continue;
-                                }
-                                switch (replacedTern.Value)
-                                {
-                                    case "\\=":
-                                        continue;
-                                }
-                                if (!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern))
-                                {
-                                    newFact.Add(replacedTern);
-                                }
-                            }
-                            continue;
-                        } */
-
-
                         //check right
-                        allTrue = true;
+                        bool allTrue = true;
                         foreach (var t in rule.Item2)
                         {
                             var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
@@ -193,9 +146,13 @@ namespace SWI_Simulation
                 {
                     KB.Facts.Add(f);
                 }
+                if (KB.Facts.Contains(Query))
+                {
+                    return true;
+                }
             }
             while(newFact.Count > 0);
-            return false;
+            return KB.Facts.Contains(Query);
         }
     }
 }
