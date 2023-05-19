@@ -1,17 +1,6 @@
 % Early definition
 :- discontiguous male/1, female/1, parent/2, married/2, divorced/2.
 
-female('Princess Diana').
-parent('Princess Diana', 'Prince William').
-parent('Princess Diana', 'Prince Harry').
-divorced('Prince Charles', 'Princess Diana').
-male('Prince Phillip').
-male('Prince Charles').
-parent('Prince Phillip', 'Prince Charles').
-grandparent(GP, GC) :- parent(GP, Parent), parent(Parent, GC).
-
-
-
 % General male gender
 male('Prince Phillip').
 male('Prince Charles').
@@ -134,7 +123,7 @@ daughter(Child, Parent) :- female(Child), child(Child, Parent).
 % if X divorced Y then Y also divorced X.
 divorced(X, Y) :- divorced(Y, X).
 
-% if X married Y then Y also divorced X.
+% if X married Y then Y also married X.
 married(X, Y) :- married(Y, X).
 
 % if GP is parent of Parent and Parent is parent of GC 

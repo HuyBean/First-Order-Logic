@@ -95,7 +95,7 @@ namespace SWI_Simulation
                     {
                         //check left
                         bool allTrue = true;
-                        foreach (var t in rule.Item1)
+/*                         foreach (var t in rule.Item1)
                         {
                             var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
                             if (replacedTern.Arguments is null)
@@ -138,7 +138,7 @@ namespace SWI_Simulation
                                 }
                             }
                             continue;
-                        }
+                        } */
 
 
                         //check right
