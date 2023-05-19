@@ -35,6 +35,41 @@ namespace SWI_Simulation
             return result;
         }
 
+        private static HashSet<string> getVarFromRule (Tuple <List<Tern> , List<Tern>> rule)
+        {
+            HashSet<string> VarName = new HashSet<string>();
+            foreach (var t in rule.Item1)
+            {
+                foreach (var name in t.GetVarArgList())
+                {
+                    VarName.Add(name);
+                }
+            }
+            foreach (var t in rule.Item2)
+            {
+                foreach (var name in t.GetVarArgList())
+                {
+                    VarName.Add(name);
+                }
+            }
+            return VarName;
+        }
+
+        private static Tern ReplaceVar (Tern old, List<string> name, List<int> index, List<string> val)
+        {
+            Tern Result = old.Clone();
+            if (Result.Arguments is null)
+                return Result;
+            for (int i = 0; i < Result.Arguments.Count; ++i)
+            {
+                if (Result.Arguments[i].Type == TernType.Variable)
+                {
+                    Result.Arguments[i] = val[index[name.IndexOf(Result.Arguments[i].Value)]];
+                }
+            }
+            return Result;
+        }
+
         public static bool ForwardChaning (KnowledgeBase KB, Tern Query)
         {            
             if (KB.Facts.Contains(Query))
@@ -44,31 +79,119 @@ namespace SWI_Simulation
             do
             {
                 newFact.Clear();
-
                 // get variable name
                 foreach (var rule in KB.Rules)
                 {
-                    HashSet<string> VarName = new HashSet<string>();
-                    foreach (var t in rule.Item1)
-                    {
-                        foreach (var name in t.GetVarArgList())
-                        {
-                            VarName.Add(name);
-                        }
-                    }
-                    foreach (var t in rule.Item2)
-                    {
-                        foreach (var name in t.GetVarArgList())
-                        {
-                            VarName.Add(name);
-                        }
-                    }
+                    HashSet<string> VarName = getVarFromRule(rule);
+
                     if (!CombinationBySize.ContainsKey(VarName.Count))
                     {
                         CombinationBySize[VarName.Count] = getCombination(KB.Atoms.Count, VarName.Count);
                     }
-                    
-                    var combianation = CombinationBySize[VarName.Count];
+
+                    var combianations = CombinationBySize[VarName.Count];
+
+                    foreach (var combine in combianations)
+                    {
+                        //check left
+                        bool allTrue = true;
+                        foreach (var t in rule.Item1)
+                        {
+                            var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
+                            if (replacedTern.Arguments is null)
+                            {
+                                continue;
+                            }
+
+                            switch (replacedTern.Value)
+                            {
+                                case "\\=":
+                                    if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
+                                    {
+                                        allTrue = false;
+                                    }
+                                    break;
+                                default:
+                                    allTrue = !(!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern));
+                                    break;
+                            }
+                            if (!allTrue)
+                                break;
+                        }
+                        if (allTrue)
+                        {
+                            foreach (var t in rule.Item2)
+                            {
+                                var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
+                                if (replacedTern.Arguments is null)
+                                {
+                                    continue;
+                                }
+                                switch (replacedTern.Value)
+                                {
+                                    case "\\=":
+                                        continue;
+                                }
+                                if (!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern))
+                                {
+                                    newFact.Add(replacedTern);
+                                }
+                            }
+                            continue;
+                        }
+
+
+                        //check right
+                        allTrue = true;
+                        foreach (var t in rule.Item2)
+                        {
+                            var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
+                            if (replacedTern.Arguments is null)
+                            {
+                                continue;
+                            }
+
+                            switch (replacedTern.Value)
+                            {
+                                case "\\=":
+                                    if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
+                                    {
+                                        allTrue = false;
+                                    }
+                                    break;
+                                default:
+                                    allTrue = !(!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern));
+                                    break;
+                            }
+                            if (!allTrue)
+                                break;
+                        }
+                        if (allTrue)
+                        {
+                            foreach (var t in rule.Item1)
+                            {
+                                var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
+                                if (replacedTern.Arguments is null)
+                                {
+                                    continue;
+                                }
+                                switch (replacedTern.Value)
+                                {
+                                    case "\\=":
+                                        continue;
+                                }
+                                if (!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern))
+                                {
+                                    newFact.Add(replacedTern);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (var f in newFact)
+                {
+                    KB.Facts.Add(f);
                 }
             }
             while(newFact.Count > 0);

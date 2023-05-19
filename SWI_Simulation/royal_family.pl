@@ -1,3 +1,5 @@
+% Early definition
+:- discontiguous male/1, female/1, parent/2, married/2, divorced/2.
 
 % General male gender
 male('Prince Phillip').
@@ -156,18 +158,17 @@ sister(Person, Sibling) :- female(Person), sibling(Person, Sibling).
 
 % if Parent is parent of NieceNephew and [Person is sister of Parent or (Uncle is brother of Parent and Person is wife of Uncle)]
 % then Person is aunt of NieceNephew.
-aunt(Person, NieceNephew) :- parent(Parent, NieceNephew), brother(Uncle, Parent), wife(Person, Uncle).
-aunt(Person, NieceNephew) :- parent(Parent, NieceNephew), sister(Person, Parent).
+aunt(Person, NieceNephew) :- parent(Parent, NieceNephew), (sister(Person, Parent); (brother(Uncle, Parent), wife(Person, Uncle))).
 
 % if Parent is parent of NieceNephew and [Person is brother of Parent or (Aunt is sister of Parent and Person is husband of Aunt)]
 % then Person is aunt of NieceNephew.
-uncle(Person, NieceNephew) :- parent(Parent, NieceNephew), sister(Aunt, Parent), husband(Person, Aunt).
-uncle(Person, NieceNephew) :- parent(Parent, NieceNephew), brother(Person, Parent).
+uncle(Person, NieceNephew) :- parent(Parent, NieceNephew), (brother(Person, Parent); (sister(Aunt, Parent), husband(Person, Aunt))).
 
 % if Person is female and AuntUncle is aunt or uncle of Person then Person is niece of AuntUncle.
-niece(Person, AuntUncle) :- female(Person), aunt(AuntUncle, Person).
-niece(Person, AuntUncle) :- female(Person), uncle(AuntUncle, Person).
+niece(Person, AuntUncle) :- female(Person), (aunt(AuntUncle, Person); uncle(AuntUncle, Person)).
 
 % if Person is male and AuntUncle is aunt or uncle of Person then Person is nephew of AuntUncle.
-nephew(Person, AuntUncle) :- male(Person), aunt(AuntUncle, Person).
-nephew(Person, AuntUncle) :- male(Person), uncle(AuntUncle, Person).
+nephew(Person, AuntUncle) :- male(Person), (aunt(AuntUncle, Person); uncle(AuntUncle, Person)).
+
+
+

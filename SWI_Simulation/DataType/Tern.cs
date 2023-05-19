@@ -4,7 +4,7 @@ using System;
 namespace SWI_Simulation.DataType
 {
 
-    public class Tern : IEquatable<Tern>
+    public class Tern : IEquatable<Tern>, ICloneable
     {
         public TernType Type { get; private set; }
         public string Value {get; private set; }
@@ -31,21 +31,7 @@ namespace SWI_Simulation.DataType
             }
         }
 
-        public bool isMatch (Tern b)
-        {
-            if (Type != TernType.CompoundTerm || b.Type != TernType.CompoundTerm)
-                return false;
-            if (Arguments is null || b.Arguments is null)
-                return false;
-            if (Value != b.Value)
-                return false;
-            if (Arguments.Count != b.Arguments.Count)
-                return false;
-            for (int i = 0; i < Arguments.Count; ++i)
-            {
-                if (Arguments)
-            }
-        }
+
         public HashSet<string> GetVarArgList ()
         {
             HashSet<string> result = new HashSet<string>();
@@ -162,6 +148,21 @@ namespace SWI_Simulation.DataType
         public override int GetHashCode()
         {
             return Value.GetHashCode() + Type.GetHashCode();
+        }
+
+        
+
+        public Tern Clone()
+        {
+            Tern Result = new Tern(Type, Value);
+            if (Arguments is not null)
+                Result.Arguments = new List<Tern>(Arguments);
+            return Result;
+        }
+
+        object ICloneable.Clone()
+        {
+            return Clone();
         }
     }
 }

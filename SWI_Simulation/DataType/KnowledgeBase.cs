@@ -109,13 +109,13 @@ namespace SWI_Simulation.DataType
             foreach (var item in LeftRaw)
             {
                 Tern? itemTern = StringToTern(item);
-                if (itemTern != null)
+                if (itemTern is not null)
                     Rules[Rules.Count - 1].Item1.Add(itemTern);
             }
             foreach (var item in RightRaw)
             {
                 Tern? itemTern = StringToTern(item);
-                if (itemTern != null)
+                if (itemTern is not null)
                     Rules[Rules.Count - 1].Item2.Add(itemTern);            
             }
         }
