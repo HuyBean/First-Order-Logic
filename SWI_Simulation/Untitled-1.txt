@@ -1,0 +1,3 @@
+working_directory(X, 'D:\\Github\\First-Order-Logic\\SWI_Simulation').
+consult('RoyalFamily.pl').
+female('Princess Anne').
