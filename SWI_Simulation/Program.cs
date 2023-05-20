@@ -30,6 +30,7 @@ namespace SWI_Simulation
                         KnowledgeBase KB = new KnowledgeBase();
                         readAndAnswerFromFile(KB, inputPath, file);
                         var consumeTime = (DateTime.Now - startTime).TotalSeconds;
+                        file?.WriteLine($"Used {consumeTime} second(s)!");
                         Console.WriteLine($"Used {consumeTime} second(s)!");
                         Console.Write("End at ");
                         Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
@@ -37,12 +38,13 @@ namespace SWI_Simulation
                 }
 
                 Console.WriteLine("Press any key to exit...");
-                var key = Console.ReadKey();
+                Console.ReadKey();
             }
             catch (Exception e)
             {
                 Console.WriteLine("An exception has thrown!!!!!");
                 Console.WriteLine(e);
+                Console.ReadKey();
             }
         }
         public static void readAndAnswerFromFile(KnowledgeBase KB, string path, StreamWriter? file = null)
@@ -71,6 +73,8 @@ namespace SWI_Simulation
                     var Result = LogicProcess.ForwardChaning(KB, q, file).ToString() + ".";
                     file?.WriteLine(Result);
                     Console.WriteLine(Result);
+                    file?.WriteLine();
+                    Console.WriteLine();
                 }
                 else if (KB.isRule(line))
                     KB.addRule(line);
