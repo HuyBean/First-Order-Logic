@@ -140,24 +140,25 @@ niece(Person, AuntUncle) :- female(Person), uncle(AuntUncle, Person).
 nephew(Person, AuntUncle) :- male(Person), aunt(AuntUncle, Person).
 nephew(Person, AuntUncle) :- male(Person), uncle(AuntUncle, Person).
 
+?-nephew('Prince William', 'Prince Charles').
 ?-sibling('Princess Diana', 'Mike Tindall').
 ?-sibling(X, 'Mike Tindall').
 ?-sibling('Princess Diana', Y).
 ?-nephew('Princess Diana', Z).
 ?-grandchild('Queen Elizabeth II', 'Zara Phillips').
 ?- male('Mike Tindall').
-?- divorced('Princess Annie', X).   
+?- divorced('Princess Anne', X).   
 ?- parent('Queen Elizabeth II', 'Prince Charles').
 ?- child(X, 'Zara Phillips').
 ?- husband('Peter Phillips', X).
 ?- wife('Sarah Ferguson', 'Prince Andrew').
-?- father(X, 'Princess Anie').
+?- father(X, 'Princess Anne').
 ?- mother(X 'Prince harry').
 ?- daughter(X, 'Prince Edward').
 ?- son(X, 'Prince Edward').
 ?- grandfather('Prince Charles', 'Prince George').
 ?- grandmother(X, 'Peter Phillips').
-?- granddaughter('Isla Phillips', 'Princess Annie').
+?- granddaughter('Isla Phillips', 'Princess Anne').
 ?- sibling('Princess Beatrice', 'Princess Eugenie').
 ?- sibling(X,'Lady Louise Mountbatten-Winsor').  
 ?- brother(X, 'Princess Charlotte').

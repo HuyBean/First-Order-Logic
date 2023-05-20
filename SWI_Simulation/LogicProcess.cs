@@ -174,6 +174,8 @@ namespace SWI_Simulation
                     foreach (var combine in combianations)
                     {
                         //check right
+                        var test = rule.Item1[0].Value;
+
                         bool rightTrue = CheckCondition(rule.Item2, newFacts, KB.Facts.ToList(), VarName.ToList(), KB.Atoms.ToList(), combine);
                         if (rightTrue)
                         {
