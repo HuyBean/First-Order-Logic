@@ -2,6 +2,8 @@ namespace SWI_Simulation.DataType
 {
     public static class RegexPattern
     {
+        public const string ARGS_PATTERN = @"\(.+\)";
+        public const string SPLIT_ARGS_PATTERN = @"(\'[^,\(\)]+\')|([^\s,\(\)]+)";
         public const string FACT_PATTERN = @"([^\(\)\s]+(\()[^\(\)]+(\)))";
         public const string COMPOUND_TERN_PATTERN = @"([^,]+\(.+?\))";
         public const string COMPARISION_OPERATION_PATTERN = @"(\\\=)|(\=)|(\>)|(\<)|(\<\=)|(\>\=)";

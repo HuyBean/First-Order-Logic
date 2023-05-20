@@ -8,7 +8,7 @@ namespace SWI_Simulation.DataType
 {
     public class KnowledgeBase
     {
-        
+        public bool isExplored {get;set;}
         public HashSet<Tern> Facts {get; private set;}
         public List<Query> Queries { get; private set; }
         public List< Tuple< List<Tern>, List<Tern>>> Rules {get; private set;}
@@ -45,6 +45,7 @@ namespace SWI_Simulation.DataType
 
         private void addTern(List<Tern> container, string raw)
         {
+            isExplored = false;
             foreach (var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
             {
                 if (val is null)
@@ -116,7 +117,7 @@ namespace SWI_Simulation.DataType
 
         public void addQuerries(string val)
         {
-            Queries.Add(val);
+            Queries.Add(new Query(val));
         }
 
         public void addQuerries(Query val)

@@ -13,27 +13,36 @@ namespace SWI_Simulation.DataType
             Condition = new HashSet<Tern>();
         }
 
-        public static implicit operator Query(string val)
-        {
-            Query q = new Query();
-
+        public Query(string val)
+        {            
+            Condition = new HashSet<Tern>();
             if (!isQuery(val))
-                return q;
+                return;
             val = val.Remove(0, 2);
-            addTern(q.Condition, val);
-            return q;
+            addTern(val);
         }
 
-        private static void addTern(HashSet<Tern> container, string raw)
+        private void addTern(string raw)
         {
             foreach (var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
             {
                 if (val is null)
                     continue;
                 Tern? item = Tern.StringToTern(val);
-
                 if (item is not null)
-                    container.Add(item);
+                {
+                    if (item.Arguments is not null)
+                    {
+                        foreach (var arg in item.Arguments)
+                        {
+                            if (arg.Type == TernType.Variable)
+                            {
+                                Variables ??= new HashSet<string>();
+                                Variables?.Add(arg.Value);
+                            }
+                        }                    }
+                    Condition.Add(item);
+                }
             }
         }
 
@@ -54,9 +63,13 @@ namespace SWI_Simulation.DataType
             }
         }
 
-        public bool hasVariable ()
+        public override string ToString()
         {
-            return (Variables is null);
+            string value = "";
+            if (Condition is null)
+                return value;
+            var temp = Condition.Cast<Tern>().Select(t => t.ToString());
+            return "?-" + string.Join(", ", temp);
         }
 
         public static bool isQuery(string val)

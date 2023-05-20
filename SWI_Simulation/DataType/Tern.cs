@@ -175,7 +175,13 @@ namespace SWI_Simulation.DataType
             {
                 if (val[val.Length - 1] == '.')
                     val = val.Remove(val.Length - 1);
-                var args = val.Replace(")", "").Split("(")[1].Split(",").Select(val => val.TrimStart().TrimEnd()).ToList();
+                var test = Regex.Match(val, RegexPattern.ARGS_PATTERN).Value;
+                var args = Regex.Matches(
+                                Regex.Match(val, RegexPattern.ARGS_PATTERN).Value,
+                                RegexPattern.SPLIT_ARGS_PATTERN)
+                            .Cast<Match>()
+                            .Select(match => match.Value)
+                            .ToList();
                 newTern = new Tern(TernType.CompoundTerm, val.Split("(")[0], args);
             }
             else if (Regex.Matches(val, RegexPattern.COMPARISION_OPERATION_PATTERN).Count == 1)
