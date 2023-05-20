@@ -109,7 +109,7 @@ namespace SWI_Simulation.DataType
             addTern(LeftRaw, Parts[0]);
 
             var RightRaw = new List<Tern>();
-            addTern(RightRaw, Parts[0]);
+            addTern(RightRaw, Parts[1]);
 
             Rules.Add(new Tuple<List<Tern>, List<Tern>>(LeftRaw, RightRaw));
         }

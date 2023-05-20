@@ -166,11 +166,9 @@ namespace SWI_Simulation
                         }
                     }
                 }
-
-                foreach (var f in newFacts)
-                {
-                    KB.Facts.Add(f);
-                }
+                Console.WriteLine($"Endloop! newFacts {newFacts.Count}");   
+                KB.Facts.UnionWith(newFacts);
+                
                 if (CheckQuery(KB.Facts, q))
                 {
                     return true;
