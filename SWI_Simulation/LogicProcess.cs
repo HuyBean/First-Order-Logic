@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SWI_Simulation.DataType;
 
@@ -7,12 +8,15 @@ namespace SWI_Simulation
 {
     public static class LogicProcess
     {
-        public static void AnswerQuestions(KnowledgeBase KB)
+        public static void AnswerQuestions(KnowledgeBase KB, StreamWriter? file = null)
         {
             foreach (var q in KB.Queries)
             {
+                file?.WriteLine(q);
                 Console.WriteLine(q);
-                Console.WriteLine(ForwardChaning(KB, q).ToString() + ".");
+                var Result = ForwardChaning(KB, q, file).ToString() + ".";
+                file?.WriteLine(Result);
+                Console.WriteLine(Result);
             }
         }
 
@@ -107,7 +111,7 @@ namespace SWI_Simulation
             }
         }
 
-        private static bool CheckQuery(ref List<bool>? wasAppeared, HashSet<string> atoms, HashSet<Tern> facts, Query q)
+        private static bool CheckQuery(ref List<bool>? wasAppeared, HashSet<string> atoms, HashSet<Tern> facts, Query q, StreamWriter? file)
         {
             if (q.Variables is null)
             {
@@ -138,17 +142,19 @@ namespace SWI_Simulation
                     var AtomNames = atoms.ToList();
                     for (int j = 0; j < VarNames.Count; ++j)
                     {
-                        Console.WriteLine($"{VarNames[j]} = {AtomNames[combine[i][j]]};");
+                        var Result = $"{VarNames[j]} = {AtomNames[combine[i][j]]};";
+                        Console.WriteLine(Result);
+                        file?.WriteLine(Result);
                     }
                 }
             }
             return false;
         }
-        private static bool ForwardChaning(KnowledgeBase KB, Query q)
+        public static bool ForwardChaning(KnowledgeBase KB, Query q, StreamWriter? file)
         {            
             List<bool>? wasAppeardCombine = null;
 
-            if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q))
+            if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q, file))
                 return true;
             if (KB.isExplored)
                 return false;
@@ -176,7 +182,7 @@ namespace SWI_Simulation
                 Console.WriteLine($"Endloop! newFacts {newFacts.Count} - {KB.Facts.Count}");
                 KB.Facts.UnionWith(newFacts);
 
-                if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q))
+                if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q, file))
                 {
                     KB.isExplored = newFacts.Count == 0;
                     return true;

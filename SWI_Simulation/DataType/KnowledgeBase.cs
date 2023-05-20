@@ -14,13 +14,13 @@ namespace SWI_Simulation.DataType
         public List< Tuple< List<Tern>, List<Tern>>> Rules {get; private set;}
         public HashSet<String> Atoms{get;set;}
 
-        private bool isRule(String val)
+        public bool isRule(String val)
         {
             var part = val.Split(":-");
             if (part.Length != 2) return false;
             return true;
         }
-        bool isFact(string val)
+        public bool isFact(string val)
         {
             if (val[val.Length - 1] == '.')
                 val = val.Remove(val.Length - 1);
@@ -123,32 +123,6 @@ namespace SWI_Simulation.DataType
         public void addQuerries(Query val)
         {
             Queries.Add(val);
-        }
-
-        public void readFromFile (string path)
-        {
-            var lines = Regex.Replace
-                        (
-                            Regex.Replace(
-                                File.ReadAllText(path),
-                                RegexPattern.COMMENT_PATTERN,
-                                "").Replace("\r", "\n")
-                            ,
-                            RegexPattern.MULTI_NEWLINE,
-                            "\n"
-                        )
-                        .TrimStart('\n')
-                        .TrimEnd('\n')
-                        .Split("\n");
-            foreach(var line in lines)
-            {
-                if (Query.isQuery(line))
-                    addQuerries(line);
-                else if (isRule(line))
-                    addRule(line);
-                else if (isFact(line))
-                    addFact(line);
-            }
         }
     }
 }
