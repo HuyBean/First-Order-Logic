@@ -10,7 +10,7 @@ namespace SWI_Simulation.DataType
     {
         
         public HashSet<Tern> Facts {get; private set;}
-        public List<Tern> Queries { get; private set; }
+        public List<Query> Queries { get; private set; }
         public List< Tuple< List<Tern>, List<Tern>>> Rules {get; private set;}
         public HashSet<String> Atoms{get;set;}
 
@@ -27,17 +27,10 @@ namespace SWI_Simulation.DataType
             val = val.TrimStart().TrimEnd();
             return Regex.IsMatch(val, RegexPattern.FACT_PATTERN);
         }
-        bool isQuery(string val)
-        {
-            if (!Regex.IsMatch(val, RegexPattern.QUERY_SIMPLE_PARTTERN))
-                return false;
-            string temp = val.Remove(0, 2);
-            return isFact(temp);
-        }
 
         public KnowledgeBase()
         {
-            Queries = new List<Tern>();
+            Queries = new List<Query>();
             Facts = new HashSet<Tern>();
             Rules = new List<Tuple<List<Tern>, List<Tern>>> ();
             Atoms = new HashSet<string>();
@@ -50,44 +43,31 @@ namespace SWI_Simulation.DataType
             return Base;
         }
 
-        private static Tern? StringToTern(string? val)
+        private void addTern(HashSet<Tern> container, string raw)
         {
-            if (val == null) return null;
-            val = val.TrimStart().TrimEnd();
-            Tern? newTern = null;
-            if (Regex.IsMatch(val, RegexPattern.COMPOUND_TERN_PATTERN))
+            foreach(var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
             {
-                if (val[val.Length - 1] == '.')
-                    val = val.Remove(val.Length - 1);
-                var args = val.Replace(")", "").Split("(")[1].Split(", ").ToList();
-                newTern = new Tern(TernType.CompoundTerm, val.Split("(")[0], args);
+                if (val is null)
+                    continue;
+                Tern? item = Tern.StringToTern(val);
+                
+                if (item?.Arguments != null)
+                {
+                    foreach (var t in item.Arguments)
+                    {
+                        if (t.Type == TernType.Atom)
+                            Atoms.Add(t.Value);
+                    }
+                }
+
+                if (item is not null)
+                    container.Add(item);
             }
-            else if (Regex.Matches(val, RegexPattern.COMPARISION_OPERATION_PATTERN).Count == 1) 
-            {
-                string op = Regex.Match(val, RegexPattern.COMPARISION_OPERATION_PATTERN).Value;
-                var args = Regex.Matches(val, RegexPattern.COMPARISION_ARGS_PATTERN).Cast<Match>().Select(match => match.Value).ToList();
-                newTern = new Tern(TernType.Comparision, op, args);
-            }
-            return newTern;
         }
 
         public void addFact(string val)
         {
-            Tern? item = StringToTern(val);
-            if (item?.Type == TernType.Atom)
-            {
-                Atoms.Add(item.Value);
-            }
-            else if (item?.Arguments != null)
-            {
-                foreach (var t in item.Arguments)
-                {
-                    if (t.Type == TernType.Atom)
-                        Atoms.Add(t.Value);
-                }
-            }
-            if (item is not null)
-                Facts.Add(item);
+            addTern(Facts, val);
         }
 
         public void addFact(Tern val)
@@ -106,15 +86,33 @@ namespace SWI_Simulation.DataType
             var RightRaw = Regex.Matches(Parts[1], RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value).ToList(); 
 
             Rules.Add(new Tuple<List<Tern>, List<Tern>>(new List<Tern>(), new List<Tern>()));
+            
             foreach (var item in LeftRaw)
             {
-                Tern? itemTern = StringToTern(item);
+                Tern? itemTern = Tern.StringToTern(item);
+                if (itemTern?.Arguments != null)
+                {
+                    foreach (var t in itemTern.Arguments)
+                    {
+                        if (t.Type == TernType.Atom)
+                            Atoms.Add(t.Value);
+                    }
+                }
                 if (itemTern is not null)
                     Rules[Rules.Count - 1].Item1.Add(itemTern);
             }
+
             foreach (var item in RightRaw)
             {
-                Tern? itemTern = StringToTern(item);
+                Tern? itemTern = Tern.StringToTern(item);
+                if (itemTern?.Arguments != null)
+                {
+                    foreach (var t in itemTern.Arguments)
+                    {
+                        if (t.Type == TernType.Atom)
+                            Atoms.Add(t.Value);
+                    }
+                }
                 if (itemTern is not null)
                     Rules[Rules.Count - 1].Item2.Add(itemTern);            
             }
@@ -122,12 +120,10 @@ namespace SWI_Simulation.DataType
 
         public void addQuerries(string val)
         {
-            Tern? item = StringToTern(val.Remove(0, 2));
-            if (item is not null)
-                Queries.Add(item);
+            Queries.Add(val);
         }
 
-        public void addQuerries(Tern val)
+        public void addQuerries(Query val)
         {
             Queries.Add(val);
         }
@@ -149,7 +145,7 @@ namespace SWI_Simulation.DataType
                         .Split("\n");
             foreach(var line in lines)
             {
-                if (isQuery(line))
+                if (Query.isQuery(line))
                     addQuerries(line);
                 else if (isRule(line))
                     addRule(line);

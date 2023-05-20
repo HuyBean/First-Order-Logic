@@ -70,16 +70,80 @@ namespace SWI_Simulation
             return Result;
         }
 
-        public static bool ForwardChaning (KnowledgeBase KB, Tern Query)
+        private static bool CheckCondition (List<Tern> factQueries, List<Tern> newFacts, List<Tern> Facts, List<string> VarNames, List<string> AtomNames, List<int> combine )
+        {
+            bool allTrue = true;
+            foreach (var t in factQueries)
+            {
+                var replacedTern = ReplaceVar(t, VarNames, combine, AtomNames);
+                if (replacedTern.Arguments is null)
+                {
+                    continue;
+                }
+
+                switch (replacedTern.Value)
+                {
+                    case "\\=":
+                        if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
+                        {
+                            allTrue = false;
+                        }
+                        break;
+                    default:
+                        allTrue = !(!newFacts.Contains(replacedTern) && !Facts.Contains(replacedTern));
+                        break;
+                }
+                if (!allTrue)
+                    break;
+            }
+            return allTrue;
+        }
+
+        private static void AddConclusion(List<Tern> conclusionContainter, List<Tern> newFacts, List<string> VarNames, List<string> AtomNames, List<int> combine)
+        {
+            foreach (var t in conclusionContainter)
+            {
+                var replacedTern = ReplaceVar(t, VarNames, combine, AtomNames);
+                if (replacedTern.Arguments is null)
+                {
+                    continue;
+                }
+                switch (replacedTern.Value)
+                {
+                    case "\\=":
+                        continue;
+                }
+                if (!newFacts.Contains(replacedTern))
+                {
+                    newFacts.Add(replacedTern);
+                }
+            }
+        }
+
+        private static bool CheckQuery (HashSet<Tern> facts, Query q)
+        {
+            bool QueryExisted = true;
+            foreach (var t in q.Condition)
+            {
+                if (!facts.Contains(t))
+                {
+                    QueryExisted = false;
+                    break;
+                }
+            }
+            return QueryExisted;
+        }
+        public static bool ForwardChaning (KnowledgeBase KB, Query q)
         {            
-            if (KB.Facts.Contains(Query))
+
+            if (CheckQuery(KB.Facts, q))
                 return true;
 
             Dictionary <int, List<List<int>> > CombinationBySize = new Dictionary<int, List<List<int>>>();
-            List<Tern> newFact = new List<Tern>();
+            List<Tern> newFacts = new List<Tern>();
             do
             {
-                newFact.Clear();
+                newFacts.Clear();
                 // get variable name
                 foreach (var rule in KB.Rules)
                 {
@@ -95,64 +159,25 @@ namespace SWI_Simulation
                     foreach (var combine in combianations)
                     {
                         //check right
-                        bool allTrue = true;
-                        foreach (var t in rule.Item2)
+                        bool rightTrue = CheckCondition(rule.Item2, newFacts, KB.Facts.ToList(), VarName.ToList(), KB.Atoms.ToList(), combine);
+                        if (rightTrue)
                         {
-                            var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
-                            if (replacedTern.Arguments is null)
-                            {
-                                continue;
-                            }
-
-                            switch (replacedTern.Value)
-                            {
-                                case "\\=":
-                                    if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
-                                    {
-                                        allTrue = false;
-                                    }
-                                    break;
-                                default:
-                                    allTrue = !(!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern));
-                                    break;
-                            }
-                            if (!allTrue)
-                                break;
-                        }
-                        if (allTrue)
-                        {
-                            foreach (var t in rule.Item1)
-                            {
-                                var replacedTern = ReplaceVar(t, VarName.ToList(), combine, KB.Atoms.ToList());
-                                if (replacedTern.Arguments is null)
-                                {
-                                    continue;
-                                }
-                                switch (replacedTern.Value)
-                                {
-                                    case "\\=":
-                                        continue;
-                                }
-                                if (!newFact.Contains(replacedTern) && !KB.Facts.Contains(replacedTern))
-                                {
-                                    newFact.Add(replacedTern);
-                                }
-                            }
+                            AddConclusion(rule.Item1, newFacts, VarName.ToList(), KB.Atoms.ToList(), combine);
                         }
                     }
                 }
 
-                foreach (var f in newFact)
+                foreach (var f in newFacts)
                 {
                     KB.Facts.Add(f);
                 }
-                if (KB.Facts.Contains(Query))
+                if (CheckQuery(KB.Facts, q))
                 {
                     return true;
                 }
             }
-            while(newFact.Count > 0);
-            return KB.Facts.Contains(Query);
+            while(newFacts.Count > 0);
+            return CheckQuery(KB.Facts, q);
         }
     }
 }

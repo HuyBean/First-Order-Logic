@@ -8,10 +8,12 @@ namespace SWI_Simulation
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Starting");
             KnowledgeBase KB = new KnowledgeBase();
             KB.readFromFile(@"D:\Github\First-Order-Logic\SWI_Simulation\royal_family.pl");
-            bool res = LogicProcess.ForwardChaning(KB, "grandfather(prince_charles,prince_george).");
-            Console.WriteLine($"Answer is {res}");
+            KB.addQuerries("?-grandfather('Prince Charles', 'Prince George').");
+            //bool res = LogicProcess.ForwardChaning(KB, KB.Queries[KB.Queries.Count - 1]);
+            //Console.WriteLine($"Answer is {res}");
         }
     }
 }
