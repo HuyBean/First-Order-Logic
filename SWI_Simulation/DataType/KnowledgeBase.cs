@@ -43,6 +43,28 @@ namespace SWI_Simulation.DataType
             return Base;
         }
 
+        private void addTern(List<Tern> container, string raw)
+        {
+            foreach (var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
+            {
+                if (val is null)
+                    continue;
+                Tern? item = Tern.StringToTern(val);
+
+                if (item?.Arguments != null)
+                {
+                    foreach (var t in item.Arguments)
+                    {
+                        if (t.Type == TernType.Atom)
+                            Atoms.Add(t.Value);
+                    }
+                }
+
+                if (item is not null)
+                    container.Add(item);
+            }
+        }
+
         private void addTern(HashSet<Tern> container, string raw)
         {
             foreach(var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
@@ -82,40 +104,14 @@ namespace SWI_Simulation.DataType
             var Parts = val.Split(":-");
             Parts[0] = Parts[0].TrimStart().TrimEnd();
             Parts[1] = Parts[1].TrimStart().TrimEnd();
-            var LeftRaw = Regex.Matches(Parts[0], RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value).ToList();
-            var RightRaw = Regex.Matches(Parts[1], RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value).ToList(); 
 
-            Rules.Add(new Tuple<List<Tern>, List<Tern>>(new List<Tern>(), new List<Tern>()));
-            
-            foreach (var item in LeftRaw)
-            {
-                Tern? itemTern = Tern.StringToTern(item);
-                if (itemTern?.Arguments != null)
-                {
-                    foreach (var t in itemTern.Arguments)
-                    {
-                        if (t.Type == TernType.Atom)
-                            Atoms.Add(t.Value);
-                    }
-                }
-                if (itemTern is not null)
-                    Rules[Rules.Count - 1].Item1.Add(itemTern);
-            }
+            var LeftRaw = new List<Tern>();
+            addTern(LeftRaw, Parts[0]);
 
-            foreach (var item in RightRaw)
-            {
-                Tern? itemTern = Tern.StringToTern(item);
-                if (itemTern?.Arguments != null)
-                {
-                    foreach (var t in itemTern.Arguments)
-                    {
-                        if (t.Type == TernType.Atom)
-                            Atoms.Add(t.Value);
-                    }
-                }
-                if (itemTern is not null)
-                    Rules[Rules.Count - 1].Item2.Add(itemTern);            
-            }
+            var RightRaw = new List<Tern>();
+            addTern(RightRaw, Parts[0]);
+
+            Rules.Add(new Tuple<List<Tern>, List<Tern>>(LeftRaw, RightRaw));
         }
 
         public void addQuerries(string val)

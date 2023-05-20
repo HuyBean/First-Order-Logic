@@ -1,5 +1,4 @@
 % Early definition
-:- discontiguous male/1, female/1, parent/2, married/2, divorced/2.
 
 % General male gender
 male('Prince Phillip').
