@@ -88,8 +88,8 @@ namespace SWI_Simulation
                         var Result = LogicProcess.ForwardChaning(KB, q, file).ToString() + ".";
                         file?.WriteLine(Result);
                         Console.WriteLine(Result);
-                        file?.WriteLine($"Current fact: {KB.Facts.Count}");
-                        Console.WriteLine($"Current fact: {KB.Facts.Count}");
+                        file?.WriteLine($"Current fact: {KB.FactsCount}");
+                        Console.WriteLine($"Current fact: {KB.FactsCount}");
                         file?.WriteLine();
                         Console.WriteLine();
                     }

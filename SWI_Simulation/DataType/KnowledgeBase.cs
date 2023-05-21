@@ -9,10 +9,30 @@ namespace SWI_Simulation.DataType
     public class KnowledgeBase
     {
         public bool isExplored {get;set;}
-        public HashSet<Tern> Facts {get; private set;}
+        private Dictionary<string, HashSet<Tern>> Facts;
         public List<Query> Queries { get; private set; }
-        public List< Tuple< List<Tern>, List<Tern>>> Rules {get; private set;}
+        public List<Rule> Rules {get; private set;}
         public HashSet<String> Atoms{get;set;}
+        public List<string> AtomsList => Atoms.ToList();
+        public int FactsCount 
+        {
+            get
+            {
+                int result = 0;
+                foreach(var item in Facts)
+                {
+                    result += item.Value.Count;
+                }
+                return result;
+            }
+        }
+
+        public bool ContainsFact(Tern t)
+        {
+            if (!Facts.ContainsKey(t.Value))
+                return false;
+            return Facts[t.Value].Contains(t);
+        }
 
         public bool isRule(String val)
         {
@@ -31,8 +51,8 @@ namespace SWI_Simulation.DataType
         public KnowledgeBase()
         {
             Queries = new List<Query>();
-            Facts = new HashSet<Tern>();
-            Rules = new List<Tuple<List<Tern>, List<Tern>>> ();
+            Facts = new Dictionary<string, HashSet<Tern>>();
+            Rules = new List<Rule>();
             Atoms = new HashSet<string>();
         }
 
@@ -88,31 +108,42 @@ namespace SWI_Simulation.DataType
             }
         }
 
-        public void addFact(string val)
+        public void addFact(string raw)
         {
-            addTern(Facts, val);
+            foreach (var val in Regex.Matches(raw, RegexPattern.FACT_PATTERN).Cast<Match>().Select(match => match.Value))
+            {
+                if (val is null)
+                    continue;
+                Tern? item = Tern.StringToTern(val);
+
+                if (item?.Arguments != null)
+                {
+                    foreach (var t in item.Arguments)
+                    {
+                        if (t.Type == TernType.Atom)
+                            Atoms.Add(t.Value);
+                    }
+                }
+
+                if (item is not null)
+                {
+                    if (!Facts.ContainsKey(item.Value))
+                        Facts[item.Value] = new HashSet<Tern>();
+                    Facts[item.Value].Add(item);
+                }
+            }
         }
 
-        public void addFact(Tern val)
+        public void addFact(Tern item)
         {
-            Facts.Add(val);
+            if (!Facts.ContainsKey(item.Value))
+                Facts[item.Value] = new HashSet<Tern>();
+            Facts[item.Value].Add(item);
         }
 
         public void addRule (string val)
         {
-            if (val[val.Length - 1] == '.')
-                val = val.Remove(val.Length - 1);
-            var Parts = val.Split(":-");
-            Parts[0] = Parts[0].TrimStart().TrimEnd();
-            Parts[1] = Parts[1].TrimStart().TrimEnd();
-
-            var LeftRaw = new List<Tern>();
-            addTern(LeftRaw, Parts[0]);
-
-            var RightRaw = new List<Tern>();
-            addTern(RightRaw, Parts[1]);
-
-            Rules.Add(new Tuple<List<Tern>, List<Tern>>(LeftRaw, RightRaw));
+            Rules.Add(new Rule(val));
         }
 
         public void addQuerries(string val)

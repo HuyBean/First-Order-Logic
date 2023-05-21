@@ -7,15 +7,17 @@ namespace SWI_Simulation.DataType
     public class Query
     {
         public HashSet<Tern> Condition {get; private set;}
+        public List<Tern> ConditionList => Condition.ToList();
         public HashSet<string>? Variables {get; private set;}
+        public List<string>? VariablesList => Variables?.ToList();
+        public HashSet<string>? Atoms{get; private set;}
         public Query()
         {
             Condition = new HashSet<Tern>();
         }
 
-        public Query(string val)
+        public Query(string val) : this()
         {            
-            Condition = new HashSet<Tern>();
             if (!isQuery(val))
                 return;
             val = val.Remove(0, 2);
@@ -35,12 +37,18 @@ namespace SWI_Simulation.DataType
                     {
                         foreach (var arg in item.Arguments)
                         {
+                            if (arg.Type == TernType.Atom)
+                            {
+                                Atoms ??= new HashSet<string>();
+                                Atoms?.Add(arg.Value);
+                            }
                             if (arg.Type == TernType.Variable)
                             {
                                 Variables ??= new HashSet<string>();
                                 Variables?.Add(arg.Value);
                             }
-                        }                    }
+                        }                    
+                    }
                     Condition.Add(item);
                 }
             }
