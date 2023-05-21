@@ -70,6 +70,12 @@ namespace SWI_Simulation
 
                 switch (replacedTern.Value)
                 {
+                    case "==":
+                        if (replacedTern.Arguments[0] != replacedTern.Arguments[1])
+                        {
+                            allTrue = false;
+                        }
+                        break;
                     case "\\=":
                         if (replacedTern.Arguments[0] == replacedTern.Arguments[1])
                         {
@@ -99,6 +105,7 @@ namespace SWI_Simulation
                 }
                 switch (replacedTern.Value)
                 {
+                    case "==":
                     case "\\=":
                         continue;
                     default:
@@ -144,7 +151,7 @@ namespace SWI_Simulation
                     var AtomNames = atoms.ToList();
                     for (int j = 0; j < VarNames.Count; ++j)
                     {
-                        var Result = $"{VarNames[j]} = {AtomNames[combine[i][j]]};";
+                        var Result = $"{VarNames[j]} = {AtomNames[combine[i][j]]}\t" + ((j != VarNames.Count - 1) ? "," : ";");
                         Console.WriteLine(Result);
                         file?.WriteLine(Result);
                     }
@@ -183,7 +190,6 @@ namespace SWI_Simulation
                         }
                     }
                 }
-                Console.WriteLine($"Endloop! newFacts {newFacts.Count} - {KB.Facts.Count}");
                 KB.Facts.UnionWith(newFacts);
 
                 if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q, file))
