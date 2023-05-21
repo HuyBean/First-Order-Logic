@@ -16,9 +16,13 @@ namespace SWI_Simulation
                 string outputPath;
 
                 Console.Write("Enter input KB path: ");
-                inputPath = Console.ReadLine() ??  "";
+                inputPath = Console.ReadLine() ?? "";
+                Console.WriteLine(Path.GetFullPath(inputPath));
                 Console.Write("Enter output result path: ");
-                outputPath = Console.ReadLine() ?? "";
+                outputPath = Console.ReadLine() ?? "default.txt";                
+                Console.WriteLine(Path.GetFullPath(outputPath));
+                Console.WriteLine();
+                Console.WriteLine();
 
                 using (var rootStream = new FileStream(outputPath, FileMode.Create))
                 {
@@ -64,22 +68,30 @@ namespace SWI_Simulation
                         .Split("\n");
             foreach (var line in lines)
             {
-                if (Query.isQuery(line))
+                try
                 {
-                    KB.addQuerries(line);
-                    var q = KB.Queries[KB.Queries.Count - 1];
-                    file?.WriteLine(q);
-                    Console.WriteLine(q);
-                    var Result = LogicProcess.ForwardChaning(KB, q, file).ToString() + ".";
-                    file?.WriteLine(Result);
-                    Console.WriteLine(Result);
-                    file?.WriteLine();
-                    Console.WriteLine();
+                    if (Query.isQuery(line))
+                    {
+                        KB.addQuerries(line);
+                        var q = KB.Queries[KB.Queries.Count - 1];
+                        file?.WriteLine(q);
+                        Console.WriteLine(q);
+                        var Result = LogicProcess.ForwardChaning(KB, q, file).ToString() + ".";
+                        file?.WriteLine(Result);
+                        Console.WriteLine(Result);
+                        file?.WriteLine();
+                        Console.WriteLine();
+                    }
+                    else if (KB.isRule(line))
+                        KB.addRule(line);
+                    else if (KB.isFact(line))
+                        KB.addFact(line);
                 }
-                else if (KB.isRule(line))
-                    KB.addRule(line);
-                else if (KB.isFact(line))
-                    KB.addFact(line);
+                catch
+                {
+                    continue;
+                }
+
             }
         }
     }
