@@ -77,6 +77,8 @@ namespace SWI_Simulation
             {
                 try
                 {
+                    if (Regex.Matches(line, RegexPattern.IGNORE_LINE).Count > 0)
+                        continue;
                     if (Query.isQuery(line))
                     {
                         KB.addQuerries(line);
@@ -86,6 +88,8 @@ namespace SWI_Simulation
                         var Result = LogicProcess.ForwardChaning(KB, q, file).ToString() + ".";
                         file?.WriteLine(Result);
                         Console.WriteLine(Result);
+                        file?.WriteLine($"Current fact: {KB.Facts.Count}");
+                        Console.WriteLine($"Current fact: {KB.Facts.Count}");
                         file?.WriteLine();
                         Console.WriteLine();
                     }

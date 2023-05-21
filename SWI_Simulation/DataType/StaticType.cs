@@ -3,6 +3,7 @@ namespace SWI_Simulation.DataType
     public static class RegexPattern
     {
         public const string ARGS_PATTERN = @"\(.+\)";
+        public const string IGNORE_LINE = @";|discontiguous";
         public const string SPLIT_ARGS_PATTERN = @"(\'[^\'\(\)]+\')|([^\s,\(\)]+)";
         public const string FACT_PATTERN = @"([^\(\)\s]+(\()[^\(\)]+(\)))|((([^\\\=\s\,']+)|('.+'))\s*(\\\=)\s*(([^\\\=\s\',]+)|('.+')))";
         public const string COMPOUND_TERN_PATTERN = @"([^,]+\(.+?\))";
