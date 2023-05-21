@@ -1,0 +1,137 @@
+?-nephew('Prince William', 'Prince Charles').
+False.
+
+?-sibling('Princess Diana', 'Mike Tindall').
+False.
+
+?-sibling(X, 'Mike Tindall').
+False.
+
+?-sibling('Princess Diana', Y).
+False.
+
+?-nephew('Princess Diana', Z).
+False.
+
+?-grandchild('Queen Elizabeth II', 'Zara Phillips').
+False.
+
+?-male('Mike Tindall').
+True.
+
+?-divorced('Princess Anne', X).
+X = 'Captain Mark Phillips'	;
+False.
+
+?-parent('Queen Elizabeth II', 'Prince Charles').
+True.
+
+?-child(X, 'Zara Phillips').
+X = 'Mia Grace Tindall'	;
+False.
+
+?-husband('Peter Phillips', X).
+X = 'Autumn Kelly'	;
+False.
+
+?-wife('Sarah Ferguson', 'Prince Andrew').
+False.
+
+?-father(X, 'Princess Anne').
+X = 'Prince Phillip'	;
+False.
+
+?-mother(X, 'Prince harry').
+False.
+
+?-daughter(X, 'Prince Edward').
+X = 'Lady Louise Mountbatten-Windsor'	;
+False.
+
+?-son(X, 'Prince Edward').
+X = 'James, Viscount Severn'	;
+False.
+
+?-grandfather('Prince Charles', 'Prince George').
+True.
+
+?-grandmother(X, 'Peter Phillips').
+X = 'Queen Elizabeth II'	;
+False.
+
+?-granddaughter('Isla Phillips', 'Princess Anne').
+True.
+
+?-sibling('Princess Beatrice', 'Princess Eugenie').
+True.
+
+?-sibling(X, 'Lady Louise Mountbatten-Winsor').
+False.
+
+?-brother(X, 'Princess Charlotte').
+X = 'Prince George'	;
+False.
+
+?-sister('Savannah Phillips', 'Isla Phillips').
+True.
+
+?-aunt('Autumn Kelly', X).
+X = 'Mia Grace Tindall'	;
+False.
+
+?-uncle(X, 'Prince George').
+X = 'Prince Harry'	;
+False.
+
+?-niece('Mia Grace Tindall', 'Peter Phillips').
+True.
+
+?-nephew('James, Viscount Severn', 'Prince Charles').
+True.
+
+?-nephew(X, Y).
+X = 'Prince William'	,
+Y = 'Timothy Laurence'	;
+X = 'Prince William'	,
+Y = 'Prince Andrew'	;
+X = 'Prince William'	,
+Y = 'Prince Edward'	;
+X = 'Prince William'	,
+Y = 'Princess Anne'	;
+X = 'Prince William'	,
+Y = 'Sophie Rhys-jones'	;
+X = 'Prince Harry'	,
+Y = 'Timothy Laurence'	;
+X = 'Prince Harry'	,
+Y = 'Prince Andrew'	;
+X = 'Prince Harry'	,
+Y = 'Prince Edward'	;
+X = 'Prince Harry'	,
+Y = 'Princess Anne'	;
+X = 'Prince Harry'	,
+Y = 'Sophie Rhys-jones'	;
+X = 'Peter Phillips'	,
+Y = 'Prince Charles'	;
+X = 'Peter Phillips'	,
+Y = 'Prince Andrew'	;
+X = 'Peter Phillips'	,
+Y = 'Prince Edward'	;
+X = 'Peter Phillips'	,
+Y = 'Camilla Parker Bowles'	;
+X = 'Peter Phillips'	,
+Y = 'Sophie Rhys-jones'	;
+X = 'James, Viscount Severn'	,
+Y = 'Prince Charles'	;
+X = 'James, Viscount Severn'	,
+Y = 'Timothy Laurence'	;
+X = 'James, Viscount Severn'	,
+Y = 'Prince Andrew'	;
+X = 'James, Viscount Severn'	,
+Y = 'Camilla Parker Bowles'	;
+X = 'James, Viscount Severn'	,
+Y = 'Princess Anne'	;
+X = 'Prince George'	,
+Y = 'Prince Harry'	;
+False.
+
+Used 267.4021776 second(s)!
