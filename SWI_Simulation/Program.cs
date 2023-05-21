@@ -24,7 +24,9 @@ namespace SWI_Simulation
                 Console.WriteLine(Path.GetFullPath(inputPath));
                 
                 Console.Write("Enter output result path: ");
-                outputPath = Console.ReadLine() ?? "default.txt";    
+                outputPath = Console.ReadLine(); 
+                if (string.IsNullOrEmpty(outputPath))
+                    outputPath = "default.txt";
                 Console.WriteLine(Path.GetFullPath(outputPath));
                 Console.WriteLine();
                 Console.WriteLine();
