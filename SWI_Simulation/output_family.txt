@@ -1,93 +1,120 @@
 ?-nephew('Prince William', 'Prince Charles').
 False.
+Current fact: 450
 
 ?-sibling('Princess Diana', 'Mike Tindall').
 False.
+Current fact: 450
 
 ?-sibling(X, 'Mike Tindall').
 False.
+Current fact: 450
 
 ?-sibling('Princess Diana', Y).
 False.
+Current fact: 450
 
 ?-nephew('Princess Diana', Z).
 False.
+Current fact: 450
 
 ?-grandchild('Queen Elizabeth II', 'Zara Phillips').
 False.
+Current fact: 450
 
 ?-male('Mike Tindall').
 True.
+Current fact: 450
 
 ?-divorced('Princess Anne', X).
 X = 'Captain Mark Phillips'	;
 False.
+Current fact: 450
 
 ?-parent('Queen Elizabeth II', 'Prince Charles').
 True.
+Current fact: 450
 
 ?-child(X, 'Zara Phillips').
 X = 'Mia Grace Tindall'	;
 False.
+Current fact: 450
 
 ?-husband('Peter Phillips', X).
 X = 'Autumn Kelly'	;
 False.
+Current fact: 450
 
 ?-wife('Sarah Ferguson', 'Prince Andrew').
 False.
+Current fact: 450
 
 ?-father(X, 'Princess Anne').
 X = 'Prince Phillip'	;
 False.
+Current fact: 450
 
 ?-mother(X, 'Prince harry').
 False.
+Current fact: 450
 
 ?-daughter(X, 'Prince Edward').
 X = 'Lady Louise Mountbatten-Windsor'	;
 False.
+Current fact: 450
 
 ?-son(X, 'Prince Edward').
 X = 'James, Viscount Severn'	;
 False.
+Current fact: 450
 
 ?-grandfather('Prince Charles', 'Prince George').
 True.
+Current fact: 450
 
 ?-grandmother(X, 'Peter Phillips').
 X = 'Queen Elizabeth II'	;
 False.
+Current fact: 450
 
 ?-granddaughter('Isla Phillips', 'Princess Anne').
 True.
+Current fact: 450
 
 ?-sibling('Princess Beatrice', 'Princess Eugenie').
 True.
+Current fact: 450
 
 ?-sibling(X, 'Lady Louise Mountbatten-Winsor').
 False.
+Current fact: 450
 
 ?-brother(X, 'Princess Charlotte').
 X = 'Prince George'	;
 False.
+Current fact: 450
 
 ?-sister('Savannah Phillips', 'Isla Phillips').
 True.
+Current fact: 450
 
 ?-aunt('Autumn Kelly', X).
 X = 'Mia Grace Tindall'	;
 False.
+Current fact: 450
 
 ?-uncle(X, 'Prince George').
 X = 'Prince Harry'	;
 False.
+Current fact: 450
 
 ?-niece('Mia Grace Tindall', 'Peter Phillips').
 True.
+Current fact: 450
 
 ?-nephew('James, Viscount Severn', 'Prince Charles').
 True.
+Current fact: 450
 
 ?-nephew(X, Y).
 X = 'Prince William'	,
@@ -133,5 +160,6 @@ Y = 'Princess Anne'	;
 X = 'Prince George'	,
 Y = 'Prince Harry'	;
 False.
+Current fact: 450
 
-Used 267.4021776 second(s)!
+Used 117.4924585 second(s)!
