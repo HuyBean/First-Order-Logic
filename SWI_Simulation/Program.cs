@@ -77,6 +77,8 @@ namespace SWI_Simulation
             {
                 try
                 {
+                    if (Regex.Matches(line, RegexPattern.IGNORE_LINE).Count > 0)
+                        continue;
                     if (Query.isQuery(line))
                     {
                         KB.addQuerries(line);
