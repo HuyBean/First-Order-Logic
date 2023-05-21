@@ -12,14 +12,19 @@ namespace SWI_Simulation
         {
             try
             {
-                string inputPath;
-                string outputPath;
+                string? inputPath;
+                string? outputPath;
 
-                Console.Write("Enter input KB path: ");
-                inputPath = Console.ReadLine() ?? "";
+                do
+                {
+                    Console.Write("Enter input KB path: ");
+                    inputPath = Console.ReadLine();
+                }
+                while(string.IsNullOrEmpty(inputPath));
                 Console.WriteLine(Path.GetFullPath(inputPath));
+                
                 Console.Write("Enter output result path: ");
-                outputPath = Console.ReadLine() ?? "default.txt";                
+                outputPath = Console.ReadLine() ?? "default.txt";    
                 Console.WriteLine(Path.GetFullPath(outputPath));
                 Console.WriteLine();
                 Console.WriteLine();
