@@ -17,31 +17,11 @@ namespace SWI_Simulation
                 var Result = ForwardChaning(KB, q, file).ToString() + ".";
                 file?.WriteLine(Result);
                 Console.WriteLine(Result);
-                file?.WriteLine($"Current fact: {KB.Facts.Count}");
-                Console.WriteLine($"Current fact: {KB.Facts.Count}");
+                file?.WriteLine($"Current fact: {KB.FactsCount}");
+                Console.WriteLine($"Current fact: {KB.FactsCount}");
                 file?.WriteLine();
                 Console.WriteLine();
             }
-        }
-
-        private static HashSet<string> getVarFromRule(Tuple<List<Tern>, List<Tern>> rule)
-        {
-            HashSet<string> VarName = new HashSet<string>();
-            foreach (var t in rule.Item1)
-            {
-                foreach (var name in t.GetVarArgList())
-                {
-                    VarName.Add(name);
-                }
-            }
-            foreach (var t in rule.Item2)
-            {
-                foreach (var name in t.GetVarArgList())
-                {
-                    VarName.Add(name);
-                }
-            }
-            return VarName;
         }
 
         private static Tern ReplaceVar(Tern old, List<string> name, List<int> index, List<string> val)
@@ -59,7 +39,7 @@ namespace SWI_Simulation
             return Result;
         }
 
-        private static bool CheckCondition(List<Tern> factQueries, HashSet<Tern>? newFacts, List<Tern> Facts, List<string> VarNames, List<string> AtomNames, List<int> combine)
+        private static bool CheckCondition(List<Tern> factQueries, KnowledgeBase KB, List<string> VarNames, List<string> AtomNames, List<int> combine)
         {
             bool allTrue = true;
             foreach (var t in factQueries)
@@ -85,8 +65,7 @@ namespace SWI_Simulation
                         }
                         break;
                     default:
-                        allTrue = (newFacts?.Contains(replacedTern) ?? false);
-                        allTrue = allTrue || Facts.Contains(replacedTern);
+                        allTrue = KB.ContainsFact(replacedTern);
                         break;
                 }
                 if (!allTrue)
@@ -95,8 +74,10 @@ namespace SWI_Simulation
             return allTrue;
         }
 
-        private static void AddConclusion(List<Tern> conclusionContainter, HashSet<Tern>? newFacts, HashSet<Tern> Facts, List<string> VarNames, List<string> AtomNames, List<int> combine)
+        // return the real add to containter.
+        private static int AddConclusion(List<Tern> conclusionContainter, KnowledgeBase KB, List<string> VarNames, List<string> AtomNames, List<int> combine)
         {
+            int counter = 0;
             foreach (var t in conclusionContainter)
             {
                 bool isTruth = true;
@@ -111,25 +92,26 @@ namespace SWI_Simulation
                     case "\\=":
                         continue;
                     default:
-                        isTruth = (newFacts?.Contains(replacedTern) ?? false);
-                        isTruth = isTruth || Facts.Contains(replacedTern);
+                        isTruth = KB.ContainsFact(replacedTern);
                         break;
                 }
                 if (!isTruth)
                 {
-                    newFacts?.Add(replacedTern);
+                    KB.addFact(replacedTern);
+                    counter++;
                 }
             }
+            return counter;
         }
 
-        private static bool CheckQuery(ref List<bool>? wasAppeared, HashSet<string> atoms, HashSet<Tern> facts, Query q, StreamWriter? file)
+        private static bool CheckQuery(ref List<bool>? wasAppeared, List<string> atoms, KnowledgeBase KB, Query q, StreamWriter? file)
         {
-            if (q.Variables is null)
+            if (q.VariablesList is null || q.Variables is null)
             {
                 bool QueryExisted = true;
                 foreach (var t in q.Condition)
                 {
-                    if (!facts.Contains(t))
+                    if (!KB.ContainsFact(t))
                     {
                         QueryExisted = false;
                         break;
@@ -137,15 +119,23 @@ namespace SWI_Simulation
                 }
                 return QueryExisted;
             }
+            if (q.Atoms is not null)
+            {
+                foreach (var val in q.Atoms)
+                {
+                    if (!atoms.Contains(val))
+                        return false;
+                }
+            }
 
             var combine = CombinationSet.getBySize(atoms.Count, q.Variables.Count);
-            if (wasAppeared is null) 
-                wasAppeared =  Enumerable.Repeat(false, combine.Count).ToList();
+            if (wasAppeared is null)
+                wasAppeared = Enumerable.Repeat(false, combine.Count).ToList();
             for (int i = 0; i < combine.Count; ++i)
             {
                 if (wasAppeared[i])
                     continue;
-                bool isExist = CheckCondition(q.Condition.ToList(), null, facts.ToList(), q.Variables.ToList(), atoms.ToList(), combine[i]);
+                bool isExist = CheckCondition(q.ConditionList, KB, q.VariablesList, atoms, combine[i]);
                 if (isExist)
                 {
                     wasAppeared[i] = true;
@@ -162,45 +152,61 @@ namespace SWI_Simulation
             return false;
         }
         public static bool ForwardChaning(KnowledgeBase KB, Query q, StreamWriter? file)
-        {            
+        {
             List<bool>? wasAppeardCombine = null;
 
-            if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q, file))
+            if (CheckQuery(ref wasAppeardCombine, KB.AtomsList, KB, q, file))
                 return true;
             if (KB.isExplored)
                 return false;
-            HashSet<Tern> newFacts = new HashSet<Tern>();
+            int newFacts = 0;
             do
             {
-                newFacts.Clear();
+                newFacts = 0;
                 // get variable name
-                foreach (var rule in KB.Rules)
+                foreach (var r in KB.Rules)
                 {
-                    HashSet<string> VarName = getVarFromRule(rule);
+                    var combine = CombinationSet.getBySize(KB.Atoms.Count, r.Variables.Count);
 
-                    var combianations = CombinationSet.getBySize(KB.Atoms.Count, VarName.Count);
-
-                    foreach (var combine in combianations)
+                    if (r.isFacts is null)
                     {
-                        //check right
-                        var test = rule.Item1[0].Value;
+                        r.isFacts = Enumerable.Repeat(false, combine.Count).ToList();
+                    }
 
-                        bool rightTrue = CheckCondition(rule.Item2, newFacts, KB.Facts.ToList(), VarName.ToList(), KB.Atoms.ToList(), combine);
+                    // Console.WriteLine($"combine size {combine.Count}");
+                    // Console.WriteLine($"Rule left:");
+                    // foreach (var val in r.Left)
+                    // {
+                    //     Console.WriteLine($"\t {val}");
+                    // }
+                    // Console.WriteLine("Rule right:");
+
+                    // foreach (var val in r.Right)
+                    // {
+                    //     Console.WriteLine($"\t {val}");
+                    // }
+
+                    for (int i = 0; i < combine.Count; ++i)
+                    {
+                        if (r.isFacts is not null && r.isFacts[i])
+                            continue;
+                        bool rightTrue = CheckCondition(r.Right, KB, r.VariablesList, KB.AtomsList, combine[i]);
                         if (rightTrue)
                         {
-                            AddConclusion(rule.Item1, newFacts, KB.Facts, VarName.ToList(), KB.Atoms.ToList(), combine);
+                            if (r.isFacts is not null)
+                                r.isFacts[i] = true;
+                            newFacts += AddConclusion(r.Left, KB, r.VariablesList, KB.AtomsList, combine[i]);
                         }
                     }
-                }
-                KB.Facts.UnionWith(newFacts);
+                };
 
-                if (CheckQuery(ref wasAppeardCombine, KB.Atoms, KB.Facts, q, file))
+                if (CheckQuery(ref wasAppeardCombine, KB.AtomsList, KB, q, file))
                 {
-                    KB.isExplored = newFacts.Count == 0;
+                    KB.isExplored = (newFacts == 0);
                     return true;
                 }
             }
-            while (newFacts.Count > 0);
+            while (newFacts > 0);
             KB.isExplored = true;
             return false;
         }
