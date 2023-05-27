@@ -1,0 +1,142 @@
+?-canflight('Red-headed').
+True.
+Current fact: 8479
+
+?-bothfamily('Ruddy duck').
+True.
+Current fact: 8479
+
+?-caneat('Tiger', 'Mottled duck').
+True.
+Current fact: 8479
+
+?-class_of('Reptile', 'Dolphin').
+False.
+Current fact: 8577
+
+?-cancompete('Gorilla', 'American crocodile').
+True.
+Current fact: 8577
+
+?-isfamily('Hylobatidae').
+True.
+Current fact: 8577
+
+?-issameorder('Gibbon', 'Human').
+True.
+Current fact: 8577
+
+?-bothorder('Dog').
+False.
+Current fact: 8577
+
+?-family_of('Falconidae', 'Robin').
+False.
+Current fact: 8577
+
+?-isorder('Mimidae').
+False.
+Current fact: 8577
+
+?-isclass('Mammal').
+True.
+Current fact: 8577
+
+?-isspecies('Gibbon').
+True.
+Current fact: 8577
+
+?-iskingdom('Hawk').
+False.
+Current fact: 8577
+
+?-bothorder('Green python').
+False.
+Current fact: 8577
+
+?-bothclass('Osprey').
+False.
+Current fact: 8577
+
+?-order_of('Primate', 'Chimpanzee').
+True.
+Current fact: 8577
+
+?-cancompete('Human', X).
+X = 'Primate'	;
+X = 'Cetacean'	;
+X = 'Carnivore'	;
+X = 'Hominidae'	;
+X = 'Hylobatidae'	;
+X = 'Human'	;
+X = 'Chimpanzee'	;
+X = 'Gorilla'	;
+X = 'Gibbon'	;
+X = 'Siamang'	;
+X = 'Delphinidae'	;
+X = 'Balaenidae'	;
+X = 'Ziphiidae'	;
+X = 'Dolphin'	;
+X = 'Whale'	;
+X = 'Sea lion'	;
+X = 'Felidae'	;
+X = 'Canidae'	;
+X = 'Tiger'	;
+X = 'Lion'	;
+X = 'Panther'	;
+X = 'Panthera pardus'	;
+X = 'Wolf'	;
+X = 'Dog'	;
+X = 'Testudines'	;
+X = 'Squamata'	;
+X = 'Crocodylia'	;
+X = 'Emydidae'	;
+X = 'Geoemydidae'	;
+X = 'Dermochelyidae'	;
+X = 'Red-eared slider'	;
+X = 'Painted turtle'	;
+X = 'Chinese pond turtle'	;
+X = 'Leatherback sea turtle'	;
+X = 'Gekkomidae'	;
+X = 'Pythonidae'	;
+X = 'Leopard gecko'	;
+X = 'House gecko'	;
+X = 'Reticulated python'	;
+X = 'Green python'	;
+X = 'Crocodylidae'	;
+X = 'Alligatoridae'	;
+X = 'Gavialidae'	;
+X = 'American crocodile'	;
+X = 'Australian crocodile'	;
+X = 'American alligator'	;
+X = 'Australian alligator'	;
+X = 'Gharial'	;
+False.
+Current fact: 8577
+
+?-family_of('Hominidae', X).
+X = 'Human'	;
+X = 'Chimpanzee'	;
+X = 'Gorilla'	;
+False.
+Current fact: 8577
+
+?-caneat(X, 'Bird').
+X = 'Mammal'	;
+False.
+Current fact: 8577
+
+?-issameorder(X, 'Downy').
+X = 'Honeyguide'	;
+X = 'Woodpecker'	;
+X = 'Barbet'	;
+X = 'Spotted Honeyguide'	;
+X = 'Least Honeyguide'	;
+X = 'Red-headed'	;
+X = 'Hairy'	;
+X = 'Downy'	;
+X = 'Coppersmith'	;
+False.
+Current fact: 8577
+
+Used 522.8518084 second(s)!
